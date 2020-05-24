@@ -23,7 +23,7 @@ namespace Quick_Country_Creator
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
+            timer1.Start();
         }
 
         private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
@@ -107,23 +107,44 @@ namespace Quick_Country_Creator
 
         private void button1_Click(object sender, EventArgs e)
         {
+
+            if (!Regex.IsMatch(countryTag.Text, "^([A-Z][A-Z][A-Z])|([A-Z][A-Z][0-9])|([A-Z][0-9][0-9])$") || organizer.GetTags().Contains(countryTag.Text)) { MessageBox.Show("Country Tag is invalid.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); return; }
+            if (!Regex.IsMatch(countryName.Text, @"^[^.,`;:\\\/?*|<>]+$") || organizer.GetNames().Contains(countryName.Text)) { MessageBox.Show("Country Name is invalid.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); return;  }
+            if (!organizer.GetNames().Contains(tempCountry.Text)) { MessageBox.Show("Template country doesn't exist.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); return;  }
+
             organizer.WriteToTag(countryTag.Text, countryName.Text);
             organizer.WriteToLocalisation(countryTag.Text, countryName.Text);
-            organizer.WriteToHistory(countryTag.Text, countryName.Text, historyContent.Text);
-            organizer.WriteToCountry(countryTag.Text, countryName.Text, countryContent.Text);
+            organizer.WriteToHistory(countryTag.Text, countryName.Text, govName.Text, techGroup.Text, primaryCulture.Text, religion.Text, capital.Text);
+            organizer.WriteToCountry(countryTag.Text, countryName.Text, tempCountry.Text,colorDialog1.Color);
+
+            foreach (TextBox textBox in groupBox1.Controls.OfType<TextBox>())
+            {
+                textBox.Text = "";
+            }
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Application.Exit();
         }
-    }
+
+        private void selectColor_Click(object sender, EventArgs e)
+        {
+            colorDialog1.ShowDialog();
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            selectColor.BackColor = colorDialog1.Color;
+            selectColor.ForeColor = colorDialog1.Color;
+        }
+            }
 
     class FileOrganizer
     {
         string modPath, countryTagFolder, countriesFolder, countryHistoryFolder,localisationFile;
 
-        public FileOrganizer(string modPath = @"C:\Users\dogac\OneDrive\Belgeler\Paradox Interactive\Europa Universalis IV\mod\WWU\", string countryTagFolder = @"common\country_tags\", string countriesFolder = @"common\countries\", string countryHistoryFolder = @"history\countries\", string localisationFile = @"localisation\prov_names_l_english.yml")
+        public FileOrganizer(string modPath = @"C:\Users\dogac\OneDrive\Belgeler\Paradox Interactive\Europa Universalis IV\mod\WWU\", string countryTagFolder = @"common\country_tags\", string countriesFolder = @"common\countries\", string countryHistoryFolder = @"history\countries\", string localisationFile = @"localisation\countries_generated_l_english.yml")
         {
             this.modPath = modPath;
             this.countryTagFolder = countryTagFolder;
@@ -162,16 +183,26 @@ namespace Quick_Country_Creator
             string[] files = Directory.GetFiles(modPath + countryTagFolder);
             File.AppendAllText(files[0], "\n" + tag + " = \"countries/" + countryName + ".txt\"");
         }
-        public void WriteToHistory(string tag, string countryName, string contents)
+        public void WriteToHistory(string tag, string countryName, string government, string tech, string culture, string rel, string capital)
         {
-            File.AppendAllText(modPath + countryHistoryFolder + tag + " - " + countryName + ".txt", contents);
+            File.AppendAllText(modPath + countryHistoryFolder + tag + " - " + countryName + ".txt", "#" + countryName);
+            File.AppendAllText(modPath + countryHistoryFolder + tag + " - " + countryName + ".txt", "\ngovernment = " + government);
+            File.AppendAllText(modPath + countryHistoryFolder + tag + " - " + countryName + ".txt", "\nmercantilism = 10");
+            File.AppendAllText(modPath + countryHistoryFolder + tag + " - " + countryName + ".txt", "\ntechnology_group = " + tech);
+            File.AppendAllText(modPath + countryHistoryFolder + tag + " - " + countryName + ".txt", "\nreligion = " + rel);
+            File.AppendAllText(modPath + countryHistoryFolder + tag + " - " + countryName + ".txt", "\nprimary_culture = " + culture);
+            File.AppendAllText(modPath + countryHistoryFolder + tag + " - " + countryName + ".txt", "\ncapital = " + capital);
         }
-        public void WriteToCountry(string tag, string countryName, string contents)
+        public void WriteToCountry(string tag, string countryName, string template, Color color)
         {
-            File.AppendAllText(modPath + countriesFolder + countryName + ".txt", contents);
+            string templateText = File.ReadAllText(modPath + countriesFolder + template + ".txt");
+            templateText = Regex.Replace(templateText, @"color = { ([\S])+ ([\S])+ ([\S])+ }", @"color = { " + color.R.ToString() + " " + color.G.ToString() + " " + color.B.ToString() + " }");
+            File.AppendAllText(modPath + countriesFolder + countryName + ".txt", templateText);
+            
         }
         public void WriteToLocalisation(string tag, string countryName)
         {
+            if(!File.Exists(modPath + localisationFile)) File.AppendAllText(modPath + localisationFile, "l_english:");
             File.AppendAllText(modPath + localisationFile, "\n " + tag + ": \"" + countryName + "\"");
             string[] str = { " - " };
             File.AppendAllText(modPath + localisationFile, "\n " + tag + "_ADJ: \"" + countryName.Split(str,StringSplitOptions.None)[0] + "\"");

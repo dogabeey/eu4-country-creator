@@ -8,3 +8,13 @@ e:\eu4 modules\Quick Country Creator\obj\Release\Quick Country Creator.csproj.Co
 e:\eu4 modules\Quick Country Creator\obj\Release\Quick Country Creator.exe
 e:\eu4 modules\Quick Country Creator\obj\Release\Quick Country Creator.pdb
 e:\eu4 modules\Quick Country Creator\obj\Release\Quick Country Creator.csprojAssemblyReference.cache
+E:\eu4 modules\eu4-country-creator\bin\Release\Quick Country Creator.exe.config
+E:\eu4 modules\eu4-country-creator\bin\Release\Quick Country Creator.exe
+E:\eu4 modules\eu4-country-creator\bin\Release\Quick Country Creator.pdb
+E:\eu4 modules\eu4-country-creator\obj\Release\Quick Country Creator.csprojAssemblyReference.cache
+E:\eu4 modules\eu4-country-creator\obj\Release\Quick_Country_Creator.Form1.resources
+E:\eu4 modules\eu4-country-creator\obj\Release\Quick_Country_Creator.Properties.Resources.resources
+E:\eu4 modules\eu4-country-creator\obj\Release\Quick Country Creator.csproj.GenerateResource.cache
+E:\eu4 modules\eu4-country-creator\obj\Release\Quick Country Creator.csproj.CoreCompileInputs.cache
+E:\eu4 modules\eu4-country-creator\obj\Release\Quick Country Creator.exe
+E:\eu4 modules\eu4-country-creator\obj\Release\Quick Country Creator.pdb
